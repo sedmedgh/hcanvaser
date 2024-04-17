@@ -16,10 +16,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:sedmedgh/not-english-nehtml2canvas.git"
+    "url": "git@github.com:sedmedgh/not-english-html2canvas.git"
   },
   "bugs": {
-    "url": "https://github.com/sedmedgh/not-english-nehtml2canvas/issues"
+    "url": "https://github.com/sedmedgh/not-english-html2canvas/issues"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.3",
