@@ -1,0 +1,15 @@
+.github/
+.idea/
+.rpt2_cache
+docs/
+examples/
+src/
+tmp/
+*.iml
+.babelrc
+.editorconfig
+.eslintrc
+.npmignore
+.prettierrc
+jest.config.js
+rollup.config.ts
