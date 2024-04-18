@@ -1,6 +1,6 @@
 ---
 title: "Getting Started"
-description: "Learn how to start using nehtml2canvas"
+description: "Learn how to start using hcanvaser"
 previousUrl: "/documentation"
 previousTitle: "About"
 nextUrl: "/configuration"
@@ -9,22 +9,22 @@ nextTitle: "Configuration"
 
 ## Installing
 
-You can install `nehtml2canvas` through npm or [download a built release](https://github.com/niklasvh/nehtml2canvas/releases).
+You can install `hcanvaser` through npm or [download a built release](https://github.com/sedmedgh/hcanvaser/releases).
 
 ### npm
 
-    npm install nehtml2canvas
+    npm install hcanvaser
 
 ```javascript
-import nehtml2canvas from 'nehtml2canvas';
+import hcanvaser from 'hcanvaser';
 ```
 
 ## Usage
 
-To render an `element` with nehtml2canvas with some (optional) [options](/configuration/), simply call `nehtml2canvas(element, options);`
+To render an `element` with hcanvaser with some (optional) [options](/configuration/), simply call `hcanvaser(element, options);`
 
 ```javascript
-nehtml2canvas(document.body).then(function(canvas) {
+hcanvaser(document.body).then(function(canvas) {
     document.body.appendChild(canvas);
 });
 ```

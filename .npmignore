@@ -11,5 +11,4 @@ tmp/
 .eslintrc
 .npmignore
 .prettierrc
-jest.config.js
 rollup.config.ts

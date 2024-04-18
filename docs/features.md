@@ -1,6 +1,6 @@
 ---
 title: "Features"
-description: "Discover the different features supported by nenehtml2canvas"
+description: "Discover the different features supported by hcanvaser"
 ---
 
 Below is a list of all the supported CSS properties and values.
@@ -73,15 +73,15 @@ Below is a list of all the supported CSS properties and values.
 
 ## Unsupported CSS properties
 These CSS properties are **NOT** currently supported
- - [background-blend-mode](https://github.com/niklasvh/nehtml2canvas/issues/966)
- - [border-image](https://github.com/niklasvh/nehtml2canvas/issues/1287)
- - [box-decoration-break](https://github.com/niklasvh/nehtml2canvas/issues/552)
- - [box-shadow](https://github.com/niklasvh/nehtml2canvas/pull/1086)
- - [filter](https://github.com/niklasvh/nehtml2canvas/issues/493)
- - [font-variant-ligatures](https://github.com/niklasvh/nehtml2canvas/pull/1085)
- - [mix-blend-mode](https://github.com/niklasvh/nehtml2canvas/issues/580)
- - [object-fit](https://github.com/niklasvh/nehtml2canvas/issues/1064)
- - [repeating-linear-gradient()](https://github.com/niklasvh/nehtml2canvas/issues/1162)
- - [writing-mode](https://github.com/niklasvh/nehtml2canvas/issues/1258)
- - [zoom](https://github.com/niklasvh/nehtml2canvas/issues/732)
+ - background-blend-mode
+ - border-image
+ - box-decoration-break
+ - box-shadow
+ - filter
+ - font-variant-ligatures
+ - mix-blend-mode
+ - object-fit
+ - repeating-linear-gradient()
+ - writing-mode
+ - zoom
 

@@ -1,6 +1,6 @@
 ---
 title: "About"
-description: "Learn about nenehtml2canvas, how it works and some of its limitations"
+description: "Learn about hcanvaser, how it works and some of its limitations"
 nextUrl: "/getting-started"
 nextTitle: "Getting Started"
 ---
@@ -23,13 +23,6 @@ screenshot of the page, but builds a representation of it based on the propertie
 As a result, it is only able to render correctly properties that it understands, meaning there are many
 CSS properties which do not work. For a full list of supported CSS properties, check out the
 [supported features](/features/) page.
-
-## Limitations
-All the images that the script uses need to reside under the [same origin](http://en.wikipedia.org/wiki/Same_origin_policy)
-for it to be able to read them without the assistance of a [proxy](/proxy/). Similarly, if you have other `canvas`
-elements on the page, which have been tainted with cross-origin content, they will become dirty and no longer readable by nenehtml2canvas.
-
-The script doesn't render plugin content such as Flash or Java applets.
 
 ## Browser compatibility
 

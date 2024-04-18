@@ -1,21 +1,21 @@
-import {Logger} from './logger';
-import {Cache, ResourceOptions} from './cache-storage';
-import {Bounds} from '../css/layout/bounds';
+import {Logger} from './logger'
+import {ResourceOptions} from './cache-storage'
+import {Bounds} from '../css/layout/bounds'
 
 export type ContextOptions = {
-    logging: boolean;
-    cache?: Cache;
-} & ResourceOptions;
+  logging: boolean
+} & ResourceOptions
 
 export class Context {
-    private readonly instanceName = `#${Context.instanceCount++}`;
-    readonly logger: Logger;
-    readonly cache: Cache;
+  private readonly instanceName = `#${Context.instanceCount++}`
+  readonly logger: Logger
 
-    private static instanceCount = 1;
+  private static instanceCount = 1
 
-    constructor(options: ContextOptions, public windowBounds: Bounds) {
-        this.logger = new Logger({id: this.instanceName, enabled: options.logging});
-        this.cache = options.cache ?? new Cache(this, options);
-    }
+  constructor(
+    options: ContextOptions,
+    public windowBounds: Bounds
+  ) {
+    this.logger = new Logger({id: this.instanceName, enabled: options.logging})
+  }
 }

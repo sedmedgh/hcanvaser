@@ -1,12 +1,12 @@
 {
-  "title": "nehtml2canvas",
-  "name": "nehtml2canvas",
+  "title": "hcanvaser",
+  "name": "hcanvaser",
   "description": "Screenshots with JavaScript",
-  "main": "dist/nehtml2canvas.js",
-  "module": "dist/nehtml2canvas.esm.js",
+  "main": "dist/hcanvaser.js",
+  "module": "dist/hcanvaser.esm.js",
   "typings": "dist/types/index.d.ts",
-  "browser": "dist/nehtml2canvas.js",
-  "version": "0.0.3",
+  "browser": "dist/hcanvaser.js",
+  "version": "0.0.0",
   "author": {
     "name": "sedmedgh",
     "email": "sedmedgh@gmail.com"
@@ -16,61 +16,44 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sedmedgh/canvaser.git"
+    "url": "https://github.com/sedmedgh/hcanvaser.git"
   },
   "bugs": {
-    "url": "https://github.com/sedmedgh/canvaser.git"
+    "url": "https://github.com/sedmedgh/hcanvaser.git"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^19.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.0",
     "@rollup/plugin-typescript": "^8.2.1",
-    "@types/glob": "^7.1.1",
     "@types/node": "^16.3.1",
-    "@types/platform": "^1.3.4",
-    "@types/promise-polyfill": "^6.0.3",
-    "@typescript-eslint/eslint-plugin": "^4.28.2",
-    "@typescript-eslint/parser": "^4.28.2",
-    "appium-ios-simulator": "^3.10.0",
-    "base64-arraybuffer": "1.0.1",
-    "body-parser": "^1.19.0",
-    "chromeless": "^1.5.2",
-    "cors": "^2.8.5",
-    "es6-promise": "^4.2.8",
-    "eslint": "^7.30.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "3.4.0",
-    "filenamify-url": "1.0.0",
-    "glob": "7.1.3",
-    "jquery": "^3.5.1",
-    "js-polyfills": "^0.1.42",
-    "node-simctl": "^5.3.0",
-    "platform": "^1.3.6",
-    "prettier": "^2.3.2",
-    "replace-in-file": "^3.0.0",
+    "@typescript-eslint/eslint-plugin": "^7.7.0",
+    "@typescript-eslint/parser": "^7.7.0",
+    "eslint": "^8.57.0",
+    "mkdirp": "^3.0.1",
+    "prettier": "^3.2.5",
     "rimraf": "^3.0.2",
     "rollup": "^2.53.1",
     "rollup-plugin-sourcemaps": "^0.6.3",
-    "serve-index": "^1.9.1",
-    "slash": "1.0.0",
     "standard-version": "^8.0.2",
     "ts-node": "^10.1.0",
-    "typescript": "^4.3.5",
+    "typescript": "^5.4.5",
     "uglify-js": "^3.13.10"
   },
   "scripts": {
     "prebuild": "rimraf dist/ && rimraf build/ && mkdirp dist",
     "build": "tsc --module commonjs && rollup -c rollup.config.ts && npm run build:minify",
-    "build:minify": "uglifyjs --compress --comments /^!/ -o dist/nehtml2canvas.min.js --mangle -- dist/nehtml2canvas.js",
+    "build:minify": "uglifyjs --compress --comments /^!/ -o dist/hcanvaser.min.js --mangle -- dist/hcanvaser.js",
     "release": "standard-version",
-    "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "eslint src/**/*.ts --max-warnings 0",
+    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
+    "lint": "eslint --ignore-path .eslintignore src/**/*.ts --max-warnings 0",
     "watch": "rollup -c rollup.config.ts -w"
   },
   "license": "MIT",
   "dependencies": {
     "css-line-break": "^2.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-unused-imports": "^3.1.0",
     "text-segmentation": "^1.0.3"
   }
 }

@@ -23,8 +23,8 @@
 </div>
 <h1>Existing canvas:</h1>
 <canvas width="500" height="200"></canvas>
-<script type="text/javascript" src="../dist/nehtml2canvas.js"></script>
-<button>Run nehtml2canvas</button>
+<script type="text/javascript" src="../dist/hcanvaser.js"></script>
+<button>Run hcanvaser</button>
 <script type="text/javascript">
     var canvas = document.querySelector("canvas");
     var ctx = canvas.getContext("2d");
@@ -40,7 +40,7 @@
     ctx.stroke();
 
     document.querySelector("button").addEventListener("click", function() {
-        nehtml2canvas(document.querySelector("#content"), {canvas: canvas, scale: 1}).then(function(canvas) {
+        hcanvaser(document.querySelector("#content"), {canvas: canvas, scale: 1}).then(function(canvas) {
             console.log('Drew on the existing canvas');
         });
     }, false);
