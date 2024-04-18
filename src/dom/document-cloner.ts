@@ -1,4 +1,3 @@
-import {Bounds} from '../css/layout/bounds'
 import {
   isBodyElement,
   isCanvasElement,
@@ -48,10 +47,7 @@ export type CloneConfigurations = CloneOptions & {
 const IGNORE_ATTRIBUTE = 'hcanvaser-ignore'
 
 export class DocumentCloner {
-  private readonly scrolledElements: [Element, number, number][]
-  private readonly referenceElement: HTMLElement
-  clonedReferenceElement?: HTMLElement
-  private documentElement: HTMLElement
+  documentElement: HTMLElement
   private readonly counters: CounterState
   private quoteDepth: number
 
@@ -60,8 +56,6 @@ export class DocumentCloner {
     element: HTMLElement,
     private readonly options: CloneConfigurations
   ) {
-    this.scrolledElements = []
-    this.referenceElement = element
     this.counters = new CounterState()
     this.quoteDepth = 0
     if (!element.ownerDocument) {
@@ -69,82 +63,17 @@ export class DocumentCloner {
     }
 
     this.documentElement = this.cloneNode(element.ownerDocument.documentElement, false) as HTMLElement
+    // const yourDOCTYPE = "<!DOCTYPE html..."; // your doctype declaration
+    // const printPreview = window.open('about:blank', 'print_preview');
+    // const printDocument = printPreview.document;
+    // printDocument.open();
+    // printDocument.write(yourDOCTYPE+ this.documentElement.innerHTML);
+    // printDocument.close()
     injectCssRules(this.documentElement, options.cssRuleSelector)
   }
   async embed(ignoreFontFace?: IgnoreFontFace) {
     await embedWebFonts(this.documentElement, ignoreFontFace)
     await embedImages(this.documentElement)
-  }
-
-  toIFrame(ownerDocument: Document, windowSize: Bounds): Promise<HTMLIFrameElement> {
-    const iframe: HTMLIFrameElement = createIFrameContainer(ownerDocument, windowSize)
-
-    if (!iframe.contentWindow) {
-      return Promise.reject(`Unable to find iframe window`)
-    }
-
-    const scrollX = (ownerDocument.defaultView as Window).pageXOffset
-    const scrollY = (ownerDocument.defaultView as Window).pageYOffset
-
-    const cloneWindow = iframe.contentWindow
-    const documentClone: Document = cloneWindow.document
-
-    /* Chrome doesn't detect relative background-images assigned in inline <style> sheets when fetched through getComputedStyle
-         if window url is about:blank, we can assign the url to current by writing onto the document
-         */
-
-    const iframeLoad = iframeLoader(iframe).then(async () => {
-      this.scrolledElements.forEach(restoreNodeScroll)
-      if (cloneWindow) {
-        cloneWindow.scrollTo(windowSize.left, windowSize.top)
-        if (
-          /(iPad|iPhone|iPod)/g.test(navigator.userAgent) &&
-          (cloneWindow.scrollY !== windowSize.top || cloneWindow.scrollX !== windowSize.left)
-        ) {
-          this.context.logger.warn('Unable to restore scroll position for cloned document')
-          this.context.windowBounds = this.context.windowBounds.add(
-            cloneWindow.scrollX - windowSize.left,
-            cloneWindow.scrollY - windowSize.top,
-            0,
-            0
-          )
-        }
-      }
-
-      const onclone = this.options.onclone
-
-      const referenceElement = this.clonedReferenceElement
-
-      if (typeof referenceElement === 'undefined') {
-        return Promise.reject(`Error finding the ${this.referenceElement.nodeName} in the cloned document`)
-      }
-
-      if (documentClone.fonts && documentClone.fonts.ready) {
-        // eslint-disable-next-line no-console
-        await documentClone.fonts.ready
-      }
-
-      if (/(AppleWebKit)/g.test(navigator.userAgent)) {
-        await imagesReady(documentClone)
-      }
-
-      if (typeof onclone === 'function') {
-        return Promise.resolve()
-          .then(() => onclone(documentClone, referenceElement))
-          .then(() => iframe)
-      }
-
-      return iframe
-    })
-
-    documentClone.open()
-    documentClone.write(`${serializeDoctype(document.doctype)}<html></html>`)
-    // Chrome scrolls the parent document for some reason after the write to the cloned window???
-    restoreOwnerScroll(this.referenceElement.ownerDocument, scrollX, scrollY)
-    documentClone.replaceChild(documentClone.adoptNode(this.documentElement), documentClone.documentElement)
-    documentClone.close()
-
-    return iframeLoad
   }
 
   createElementClone<T extends HTMLElement | SVGElement>(node: T): HTMLElement | SVGElement {
@@ -287,7 +216,7 @@ export class DocumentCloner {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     if (!this.isVisible(child.style)) return
-    const invalidTags = ['SCRIPT', 'META', 'LINK', 'TITLE', 'PLASMO-CSUI']
+    const invalidTags = ['SCRIPT', 'META', 'LINK', 'STYLE', 'TITLE', 'PLASMO-CSUI']
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     if (invalidTags.includes(child.tagName) || child.nodeType == 8) return
@@ -335,9 +264,6 @@ export class DocumentCloner {
       const styleBefore = window.getComputedStyle(node, ':before')
       const styleAfter = window.getComputedStyle(node, ':after')
 
-      if (this.referenceElement === node && isHTMLElementNode(clone)) {
-        this.clonedReferenceElement = clone
-      }
       if (isBodyElement(clone)) {
         createPseudoHideStyles(clone)
       }
@@ -367,9 +293,33 @@ export class DocumentCloner {
       if (style && !isIFrameElement(node) || copyStyles) {
         copyCSSStyles(style, clone)
       }
-
+      const getNumber = (str: string) => +str.replace('px', '')
       if (node.scrollTop !== 0 || node.scrollLeft !== 0) {
-        this.scrolledElements.push([clone, node.scrollLeft, node.scrollTop])
+        let gapY = 0
+        if (clone.style.rowGap !== '0px' && /*['grid', */(('flex' === clone.style.display && clone.style.flexDirection === 'column') ||'grid' === clone.style.display)) {
+          gapY = getNumber(clone.style.rowGap)
+        }
+        clone.style.position = 'relative'
+        let scrolledY = 0
+        clone.childNodes.forEach((ch)=> {
+          // @ts-ignore
+          if (ch.nodeType == 1 && ch.style) {
+            // @ts-ignore
+            const height = getNumber(ch.style.height)
+            // @ts-ignore
+            const marginY = getNumber(ch.style.marginBottom )+ getNumber(ch.style.marginTop)
+            // const marginX = +ch.style.marginLeft.replace('px', '') + +ch.style.marginRight.replace('px', '')
+            // @ts-ignore
+            if (!['fixed', 'absolute'].includes(ch.style.position)) {
+              // @ts-ignore
+              ch.style.position = 'absolute';
+              // @ts-ignore
+              ch.style.inset = `${-node.scrollTop + scrolledY + marginY}px ${node.scrollLeft}px 0 0`;
+              scrolledY += height;
+              scrolledY += gapY;
+            }
+          }
+        })
       }
 
       if ((isTextareaElement(node) || isSelectElement(node)) && (isTextareaElement(clone) || isSelectElement(clone))) {
@@ -495,65 +445,6 @@ enum PseudoElementType {
   AFTER
 }
 
-const createIFrameContainer = (ownerDocument: Document, bounds: Bounds): HTMLIFrameElement => {
-  const cloneIframeContainer = ownerDocument.createElement('iframe')
-
-  cloneIframeContainer.className = 'hcanvaser-container'
-  cloneIframeContainer.style.visibility = 'hidden'
-  cloneIframeContainer.style.position = 'fixed'
-  cloneIframeContainer.style.left = '-10000px'
-  cloneIframeContainer.style.top = '0px'
-  cloneIframeContainer.style.border = '0'
-  cloneIframeContainer.width = bounds.width.toString()
-  cloneIframeContainer.height = bounds.height.toString()
-  cloneIframeContainer.scrolling = 'no' // ios won't scroll without it
-  cloneIframeContainer.setAttribute(IGNORE_ATTRIBUTE, 'true')
-  ownerDocument.body.appendChild(cloneIframeContainer)
-
-  return cloneIframeContainer
-}
-
-const imageReady = (img: HTMLImageElement): Promise<Event | void | string> => {
-  return new Promise((resolve) => {
-    if (img.complete) {
-      resolve()
-      return
-    }
-    if (!img.src) {
-      resolve()
-      return
-    }
-    img.onload = resolve
-    img.onerror = resolve
-  })
-}
-
-const imagesReady = (document: HTMLDocument): Promise<unknown[]> => {
-  return Promise.all([].slice.call(document.images, 0).map(imageReady))
-}
-
-const iframeLoader = (iframe: HTMLIFrameElement): Promise<HTMLIFrameElement> => {
-  return new Promise((resolve, reject) => {
-    const cloneWindow = iframe.contentWindow
-
-    if (!cloneWindow) {
-      return reject(`No window assigned for iframe`)
-    }
-
-    const documentClone = cloneWindow.document
-
-    cloneWindow.onload = iframe.onload = () => {
-      cloneWindow.onload = iframe.onload = null
-      const interval = setInterval(() => {
-        if (documentClone.body.childNodes.length > 0 && documentClone.readyState === 'complete') {
-          clearInterval(interval)
-          resolve(iframe)
-        }
-      }, 50)
-    }
-  })
-}
-
 const ignoredStyleProperties = [
   'all', // #2476
   'd', // #2483
@@ -569,47 +460,6 @@ export const copyCSSStyles = <T extends HTMLElement | SVGElement>(style: CSSStyl
     }
   }
   return target
-}
-
-const serializeDoctype = (doctype?: DocumentType | null): string => {
-  let str = ''
-  if (doctype) {
-    str += '<!DOCTYPE '
-    if (doctype.name) {
-      str += doctype.name
-    }
-
-    if (doctype.internalSubset) {
-      str += doctype.internalSubset
-    }
-
-    if (doctype.publicId) {
-      str += `"${doctype.publicId}"`
-    }
-
-    if (doctype.systemId) {
-      str += `"${doctype.systemId}"`
-    }
-
-    str += '>'
-  }
-
-  return str
-}
-
-const restoreOwnerScroll = (ownerDocument: Document | null, x: number, y: number) => {
-  if (
-    ownerDocument &&
-    ownerDocument.defaultView &&
-    (x !== ownerDocument.defaultView.pageXOffset || y !== ownerDocument.defaultView.pageYOffset)
-  ) {
-    ownerDocument.defaultView.scrollTo(x, y)
-  }
-}
-
-const restoreNodeScroll = ([element, x, y]: [HTMLElement, number, number]) => {
-  element.scrollLeft = x
-  element.scrollTop = y
 }
 
 const PSEUDO_BEFORE = ':before'

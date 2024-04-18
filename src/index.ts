@@ -13,7 +13,6 @@ export type Options = CloneOptions &
   RenderOptions &
   ContextOptions & {
     backgroundColor: string | null
-    removeContainer?: boolean
     ignoreFontFace?: IgnoreFontFace
     cssRuleSelector?: CSSRuleSelector
   }
@@ -95,13 +94,11 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
   )
 
   const documentCloner = new DocumentCloner(context, element, cloneOptions)
-  const clonedElement = documentCloner.clonedReferenceElement
+  const clonedElement = documentCloner.documentElement
   if (!clonedElement) {
     return Promise.reject(`Unable to find element in cloned iframe`)
   }
   await documentCloner.embed(opts.ignoreFontFace)
-
-  const container = await documentCloner.toIFrame(ownerDocument, windowBounds)
 
   const {width, height, left, top} =
     isBodyElement(clonedElement) || isHTMLElement(clonedElement)
@@ -122,12 +119,6 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
 
   const renderer = new ForeignObjectRenderer(context, renderOptions)
   const canvas = await renderer.render(clonedElement)
-
-  if (opts.removeContainer ?? true) {
-    if (!DocumentCloner.destroy(container)) {
-      context.logger.error(`Cannot detach cloned iframe as it is not in the DOM anymore`)
-    }
-  }
 
   context.logger.debug(`Finished rendering`)
   Object.assign(canvas, {
