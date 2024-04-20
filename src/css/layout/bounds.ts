@@ -47,16 +47,16 @@ export const parseDocumentSize = (document: Document): Bounds => {
   if (!body || !documentElement) {
     throw new Error(`Unable to get document size`)
   }
-  const width = Math.max(
-    Math.max(body.scrollWidth, documentElement.scrollWidth),
-    Math.max(body.offsetWidth, documentElement.offsetWidth),
-    Math.max(body.clientWidth, documentElement.clientWidth)
+  const width = Math.min(
+    Math.min(body.scrollWidth, documentElement.scrollWidth),
+    Math.min(body.offsetWidth, documentElement.offsetWidth),
+    Math.min(body.clientWidth, documentElement.clientWidth)
   )
 
-  const height = Math.max(
-    Math.max(body.scrollHeight, documentElement.scrollHeight),
-    Math.max(body.offsetHeight, documentElement.offsetHeight),
-    Math.max(body.clientHeight, documentElement.clientHeight)
+  const height = Math.min(
+    Math.min(body.scrollHeight, documentElement.scrollHeight),
+    Math.min(body.offsetHeight, documentElement.offsetHeight),
+    Math.min(body.clientHeight, documentElement.clientHeight)
   )
 
   return new Bounds(0, 0, width, height)

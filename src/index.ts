@@ -124,7 +124,8 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
   Object.assign(canvas, {
     toImage:(type?: ImageType, quality?: number) => {
       const _type = type ? imageMap[type] : undefined
-      return canvas.toDataURL(_type, quality);
+      const _quality = quality && typeof quality === 'number' && quality > 0.9 ? 0.9 : quality
+      if (_type) return canvas.toDataURL(_type, _quality);
     }
   })
   return canvas as ReturnType
