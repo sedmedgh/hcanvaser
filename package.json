@@ -6,7 +6,7 @@
   "module": "dist/hcanvaser.esm.js",
   "typings": "dist/types/index.d.ts",
   "browser": "dist/hcanvaser.js",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": {
     "name": "sedmedgh",
     "email": "sedmedgh@gmail.com"
@@ -54,7 +54,6 @@
     "css-line-break": "^2.1.0",
     "eslint-plugin-prettier": "^5.1.3",
     "eslint-plugin-unused-imports": "^3.1.0",
-    "text-segmentation": "^1.0.3",
-    "uuid": "^9.0.1"
+    "text-segmentation": "^1.0.3"
   }
 }
