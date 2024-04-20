@@ -71,3 +71,7 @@ Build browser bundle
 
 $ npm run build
 ```
+
+### TODO List
+[] Select element like inspect element and then take shot
+[] Placing the loading for the Element that we are taking a picture of that
