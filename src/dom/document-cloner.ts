@@ -25,6 +25,7 @@ import {Context} from '../core/context'
 import {DebuggerType, isDebugging} from '../core/debugger'
 import {CSSRuleSelector, embedWebFonts, IgnoreFontFace, injectCssRules} from './extra/embed-webfonts'
 import {embedImages} from './extra/embed-images'
+import {toArray} from './extra/util';
 
 export interface CloneOptions {
   ignoreElements?: (element: Element) => boolean
@@ -45,7 +46,53 @@ export type CloneConfigurations = CloneOptions & {
 }
 
 const IGNORE_ATTRIBUTE = 'hcanvaser-ignore'
+const invalidTags = ['SCRIPT', 'META', 'LINK', 'STYLE', 'TITLE', 'PLASMO-CSUI']
 
+const fakeScroll = (clone: Node, y: number, x: number) => {
+  if (y !== 0 || x !== 0) {
+    // @ts-ignore
+    const children = toArray<ChildNode>(clone.childNodes)
+    const body = children.find((ch) => ch.nodeName == 'BODY')
+    if (body) fakeScroll(body, y, x)
+    else {
+      // @ts-ignore
+      const scrolledNodes = children.filter((ch) => ![...invalidTags, '#text'].includes(ch.nodeName) && !['fixed', 'absolute'].includes(ch?.style?.position))
+      // @ts-ignore
+      clone.style.position = 'relative'
+      // @ts-ignore
+      clone.style.overflow = 'hidden'
+      if (scrolledNodes.length > 0) {
+        // @ts-ignore
+        let right = clone.style.direction === 'rtl' ? `${x}px` : 0
+        // @ts-ignore
+        let left = clone.style.direction === 'ltr' ? `${-x}px` : 0
+        const inset = `${-y}px ${right} 0 ${left}`
+        if (scrolledNodes.length === 1) {
+          // @ts-ignore
+          scrolledNodes[0].style.position = 'absolute'
+          // @ts-ignore
+          scrolledNodes[0].style.inset = inset
+        }
+        else {
+          const section = document.createElement("section")
+          // @ts-ignore
+          copyCSSStyles(clone.style, section)
+          section.style.inset = inset
+          section.style.position = 'absolute'
+          section.style.inlineSize = 'unset'
+          section.style.blockSize = 'unset'
+          section.style.height = 'unset'
+          section.style.width = 'unset'
+          scrolledNodes.forEach((ch) => {
+            section.appendChild(ch.cloneNode(true))
+            ch.remove();
+          })
+          clone.appendChild(section)
+        }
+      }
+    }
+  }
+}
 export class DocumentCloner {
   documentElement: HTMLElement
   private readonly counters: CounterState
@@ -216,7 +263,6 @@ export class DocumentCloner {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     if (!this.isVisible(child.style)) return
-    const invalidTags = ['SCRIPT', 'META', 'LINK', 'STYLE', 'TITLE', 'PLASMO-CSUI']
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     if (invalidTags.includes(child.tagName) || child.nodeType == 8) return
@@ -293,34 +339,8 @@ export class DocumentCloner {
       if (style && !isIFrameElement(node) || copyStyles) {
         copyCSSStyles(style, clone)
       }
-      const getNumber = (str: string) => +str.replace('px', '')
-      if (node.scrollTop !== 0 || node.scrollLeft !== 0) {
-        let gapY = 0
-        if (clone.style.rowGap !== '0px' && /*['grid', */(('flex' === clone.style.display && clone.style.flexDirection === 'column') ||'grid' === clone.style.display)) {
-          gapY = getNumber(clone.style.rowGap)
-        }
-        clone.style.position = 'relative'
-        let scrolledY = 0
-        clone.childNodes.forEach((ch)=> {
-          // @ts-ignore
-          if (ch.nodeType == 1 && ch.style) {
-            // @ts-ignore
-            const height = getNumber(ch.style.height)
-            // @ts-ignore
-            const marginY = getNumber(ch.style.marginBottom )+ getNumber(ch.style.marginTop)
-            // const marginX = +ch.style.marginLeft.replace('px', '') + +ch.style.marginRight.replace('px', '')
-            // @ts-ignore
-            if (!['fixed', 'absolute'].includes(ch.style.position)) {
-              // @ts-ignore
-              ch.style.position = 'absolute';
-              // @ts-ignore
-              ch.style.inset = `${-node.scrollTop + scrolledY + marginY}px ${node.scrollLeft}px 0 0`;
-              scrolledY += height;
-              scrolledY += gapY;
-            }
-          }
-        })
-      }
+
+      fakeScroll(clone, node.scrollTop, node.scrollLeft)
 
       if ((isTextareaElement(node) || isSelectElement(node)) && (isTextareaElement(clone) || isSelectElement(clone))) {
         clone.value = node.value
