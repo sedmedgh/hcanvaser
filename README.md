@@ -8,6 +8,11 @@
 
 The script allows you to take "screenshots" of webpages or parts of it, directly on the users browser. The screenshot is based on the DOM and as such may not be 100% accurate to the real representation as it does not make an actual screenshot, but builds the screenshot based on the information available on the page.
 
+### Advantage over other packages
+* Supports nested elements against html2canvas
+* Supports fontFaces and custom elements and styles
+* Supports scrolled element against html-to-image and dom-to-image
+
 ### How does it work?
 
 The script renders the current page as a canvas image, by reading the DOM and the different styles applied to the elements.
@@ -43,7 +48,7 @@ The function returns a [Promise](https://developer.mozilla.org/en-US/docs/Web/Ja
   const style = getComputedStyle(screenshotTarget)
   const fontFaceName = style.getPropertyValue('--base-font-family')
   const canvas = await hcanvaser(screenshotTarget,{
-    ignoreFontFace(font){
+    filterFontFace(font){
       if (font?.style['font-family'] === fontFaceName)
         return true
       return false

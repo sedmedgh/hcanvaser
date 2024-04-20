@@ -27,7 +27,7 @@ These are all of the available configuration options.
 | scrollY |                                 `Element` scrollY                                  | The y-scroll position to used when rendering element, (for example if the Element uses `position: fixed`)                                                                                   
 | windowWidth |                                `Window.innerWidth`                                 | Window width to use when rendering `Element`, which may affect things like Media queries                                                                                                    
 | windowHeight |                                `Window.innerHeight`                                | Window height to use when rendering `Element`, which may affect things like Media queries                                                                                                   
-| ignoreFontFace |                         `(fontFace: CSSStyleRule) => true`                         | ignore embeding fontFaces in canvas foreign-object                                                                                                  
+| filterFontFace |                         `(fontFace: CSSStyleRule) => true`                         | ignore embeding fontFaces in canvas foreign-object                                                                                                  
 | cssRuleSelector | `(rule: string) => rule.includes('::-webkit-scrollbar') \|\| rule.includes('scrollbar')` | select cssRules for add them to canvas foreign-object
 
 If you wish to exclude certain `Element`s from getting rendered, you can add a `hcanvaser-ignore` attribute to those elements and hcanvaser will exclude them from the rendering.

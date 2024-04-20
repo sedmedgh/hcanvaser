@@ -23,7 +23,7 @@ import {CSSParsedCounterDeclaration, CSSParsedPseudoDeclaration} from '../css/in
 import {getQuote} from '../css/property-descriptors/quotes'
 import {Context} from '../core/context'
 import {DebuggerType, isDebugging} from '../core/debugger'
-import {CSSRuleSelector, embedWebFonts, IgnoreFontFace, injectCssRules} from './extra/embed-webfonts'
+import {CSSRuleSelector, embedWebFonts, FilterFontFace, injectCssRules} from './extra/embed-webfonts'
 import {embedImages} from './extra/embed-images'
 import {toArray} from './extra/util';
 
@@ -118,8 +118,8 @@ export class DocumentCloner {
     // printDocument.close()
     injectCssRules(this.documentElement, options.cssRuleSelector)
   }
-  async embed(ignoreFontFace?: IgnoreFontFace) {
-    await embedWebFonts(this.documentElement, ignoreFontFace)
+  async embed(filterFontFace?: FilterFontFace) {
+    await embedWebFonts(this.documentElement, filterFontFace)
     await embedImages(this.documentElement)
   }
 

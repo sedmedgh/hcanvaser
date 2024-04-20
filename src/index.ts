@@ -6,14 +6,14 @@ import {CacheStorage} from './core/cache-storage'
 import {RenderConfigurations, RenderOptions} from './render/canvas/canvas-renderer'
 import {ForeignObjectRenderer} from './render/canvas/foreignobject-renderer'
 import {Context, ContextOptions} from './core/context'
-import {CSSRuleSelector, IgnoreFontFace} from './dom/extra/embed-webfonts'
+import {CSSRuleSelector, FilterFontFace} from './dom/extra/embed-webfonts'
 
 export type Options = CloneOptions &
   WindowOptions &
   RenderOptions &
   ContextOptions & {
     backgroundColor: string | null
-    ignoreFontFace?: IgnoreFontFace
+    filterFontFace?: FilterFontFace
     cssRuleSelector?: CSSRuleSelector
   }
 type ImageTypes = 'image/png' | 'image/jpeg' | 'image/webp'
@@ -98,7 +98,7 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
   if (!clonedElement) {
     return Promise.reject(`Unable to find element in cloned iframe`)
   }
-  await documentCloner.embed(opts.ignoreFontFace)
+  await documentCloner.embed(opts.filterFontFace)
 
   const {width, height, left, top} =
     isBodyElement(clonedElement) || isHTMLElement(clonedElement)

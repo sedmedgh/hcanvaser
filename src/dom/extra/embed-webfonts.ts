@@ -8,7 +8,7 @@ interface Metadata {
   url: string
   cssText: string
 }
-export type IgnoreFontFace = (font: CSSStyleRule) => boolean
+export type FilterFontFace = (font: CSSStyleRule) => boolean
 const cssFetchCache: {[href: string]: Metadata} = {}
 
 async function fetchCSS(url: string) {
@@ -200,10 +200,10 @@ async function parseWebFontRules<T extends HTMLElement>(node: T) {
 
 export async function getWebFontCSS<T extends HTMLElement>(
   node: T,
-  ignoreFontFace?: IgnoreFontFace
+  filterFontFace?: FilterFontFace
 ): Promise<string | void> {
   const rules = await parseWebFontRules(node)
-  const _rules = ignoreFontFace && typeof ignoreFontFace === 'function' ? rules.filter(ignoreFontFace) : rules
+  const _rules = filterFontFace && typeof filterFontFace === 'function' ? rules.filter(filterFontFace) : rules
   if (_rules.length) {
     const cssTexts = await Promise.all(
       rules.map((rule) => {
@@ -217,8 +217,8 @@ export async function getWebFontCSS<T extends HTMLElement>(
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export async function embedWebFonts<T extends HTMLElement>(clonedNode: T, ignoreFontFace?: IgnoreFontFace) {
-  const cssText = await getWebFontCSS(clonedNode, ignoreFontFace)
+export async function embedWebFonts<T extends HTMLElement>(clonedNode: T, filterFontFace?: FilterFontFace) {
+  const cssText = await getWebFontCSS(clonedNode, filterFontFace)
 
   if (cssText) {
     const styleNode = document.createElement('style')
