@@ -44,7 +44,7 @@
     "prebuild": "rimraf dist/ && rimraf build/ && mkdirp dist",
     "build": "tsc --module commonjs && rollup -c rollup.config.ts && npm run build:minify",
     "build:minify": "uglifyjs --compress --comments /^!/ -o dist/hcanvaser.min.js --mangle -- dist/hcanvaser.js",
-    "release": "standard-version",
+    "release": "standard-version && npm run build && git push --follow-tags origin master && npm publish",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
     "lint": "eslint --ignore-path .eslintignore src/**/*.ts --max-warnings 0",
     "watch": "rollup -c rollup.config.ts -w"
