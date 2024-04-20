@@ -6,7 +6,7 @@
   "module": "dist/hcanvaser.esm.js",
   "typings": "dist/types/index.d.ts",
   "browser": "dist/hcanvaser.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": {
     "name": "sedmedgh",
     "email": "sedmedgh@gmail.com"
