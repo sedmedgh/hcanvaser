@@ -12,19 +12,19 @@ type ImageTypes = 'image/png' | 'image/jpeg' | 'image/webp'
 const imageMap: Record<string, ImageTypes> = {
   png: 'image/png',
   jpeg: 'image/jpeg',
-  webp: 'image/webp',
+  webp: 'image/webp'
 }
 type ImageType = keyof typeof imageMap
 export type Options = CloneOptions &
-    WindowOptions &
-    RenderOptions &
-    ContextOptions & {
-  backgroundColor: string | null
-  filterFontFace?: FilterFontFace
-  cssRuleSelector?: CSSRuleSelector
-  type?: ImageType
-  quality?: number
-}
+  WindowOptions &
+  RenderOptions &
+  ContextOptions & {
+    backgroundColor: string | null
+    filterFontFace?: FilterFontFace
+    cssRuleSelector?: CSSRuleSelector
+    type?: ImageType
+    quality?: number
+  }
 
 const takeShot = (element: HTMLElement, options: Partial<Options> = {}): Promise<string | undefined> => {
   return renderElement(element, options)
@@ -35,7 +35,6 @@ export default takeShot
 if (typeof window !== 'undefined') {
   CacheStorage.setContext(window)
 }
-
 
 const renderElement = async (element: HTMLElement, opts: Partial<Options>): Promise<string | undefined> => {
   if (!element || typeof element !== 'object') {
@@ -123,7 +122,7 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
   const toImage = (type?: ImageType, quality?: number) => {
     const _type = type ? imageMap[type] : undefined
     const _quality = quality && typeof quality === 'number' && quality > 0.9 ? 0.9 : quality
-    if (_type) return canvas.toDataURL(_type, _quality);
+    if (_type) return canvas.toDataURL(_type, _quality)
   }
   return toImage(opts.type, opts.quality)
 }

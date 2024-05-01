@@ -25,7 +25,7 @@ import {Context} from '../core/context'
 import {DebuggerType, isDebugging} from '../core/debugger'
 import {CSSRuleSelector, embedWebFonts, FilterFontFace, injectCssRules} from './extra/embed-webfonts'
 import {embedImages} from './extra/embed-images'
-import {toArray} from './extra/util';
+import {toArray} from './extra/util'
 
 export interface CloneOptions {
   ignoreElements?: (element: Element) => boolean
@@ -55,8 +55,10 @@ const fakeScroll = (clone: Node, y: number, x: number) => {
     const body = children.find((ch) => ch.nodeName == 'BODY')
     if (body) fakeScroll(body, y, x)
     else {
-      // @ts-ignore
-      const scrolledNodes = children.filter((ch) => ![...invalidTags, '#text'].includes(ch.nodeName) && !['fixed', 'absolute'].includes(ch?.style?.position))
+      const scrolledNodes = children.filter(
+          // @ts-ignore
+          (ch) => ![...invalidTags, '#text'].includes(ch.nodeName) && !['fixed', 'absolute'].includes(ch?.style?.position)
+      )
       // @ts-ignore
       clone.style.position = 'relative'
       // @ts-ignore
@@ -72,9 +74,8 @@ const fakeScroll = (clone: Node, y: number, x: number) => {
           scrolledNodes[0].style.position = 'absolute'
           // @ts-ignore
           scrolledNodes[0].style.inset = inset
-        }
-        else {
-          const section = document.createElement("section")
+        } else {
+          const section = document.createElement('section')
           // @ts-ignore
           copyCSSStyles(clone.style, section)
           section.style.inset = inset
@@ -85,7 +86,7 @@ const fakeScroll = (clone: Node, y: number, x: number) => {
           section.style.width = 'unset'
           scrolledNodes.forEach((ch) => {
             section.appendChild(ch.cloneNode(true))
-            ch.remove();
+            ch.remove()
           })
           clone.appendChild(section)
         }
@@ -336,7 +337,7 @@ export class DocumentCloner {
 
       this.counters.pop(counters)
 
-      if (style && !isIFrameElement(node) || copyStyles) {
+      if ((style && !isIFrameElement(node)) || copyStyles) {
         copyCSSStyles(style, clone)
       }
 

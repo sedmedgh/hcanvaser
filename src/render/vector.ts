@@ -15,4 +15,3 @@ export class Vector implements IPath {
     return new Vector(this.x + deltaX, this.y + deltaY)
   }
 }
-

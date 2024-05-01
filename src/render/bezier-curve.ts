@@ -43,4 +43,3 @@ export class BezierCurve implements IPath {
     return new BezierCurve(this.end, this.endControl, this.startControl, this.start)
   }
 }
-

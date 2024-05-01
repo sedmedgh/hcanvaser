@@ -163,4 +163,3 @@ const processListItems = (owner: ElementContainer, elements: ElementPaint[]) => 
     numbering += reversed ? -1 : 1
   }
 }
-
