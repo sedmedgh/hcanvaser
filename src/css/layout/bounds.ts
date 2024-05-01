@@ -35,9 +35,15 @@ export class Bounds {
 
   static EMPTY = new Bounds(0, 0, 0, 0)
 }
-
 export const parseBounds = (context: Context, node: Element): Bounds => {
-  return Bounds.fromClientRect(context, node.getBoundingClientRect())
+  // @ts-ignore
+  const style = node.style
+  const rect = JSON.parse(JSON.stringify(node.getBoundingClientRect()))
+  const width = parseInt(style?.width, 10)
+  const height = parseInt(style?.height, 10)
+  if (!rect.width && width) rect.width = width
+  if (!rect.height && height) rect.height = height
+  return Bounds.fromClientRect(context, rect)
 }
 
 export const parseDocumentSize = (document: Document): Bounds => {

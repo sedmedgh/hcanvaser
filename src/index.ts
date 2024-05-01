@@ -99,7 +99,6 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
     return Promise.reject(`Unable to find element in cloned iframe`)
   }
   await documentCloner.embed(opts.filterFontFace)
-
   const {width, height, left, top} =
     isBodyElement(clonedElement) || isHTMLElement(clonedElement)
       ? parseDocumentSize(clonedElement.ownerDocument)

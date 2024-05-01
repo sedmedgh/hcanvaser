@@ -109,7 +109,7 @@ export class DocumentCloner {
       throw new Error('Cloned element does not have an owner document')
     }
 
-    this.documentElement = this.cloneNode(element.ownerDocument.documentElement, false) as HTMLElement
+    this.documentElement = this.cloneNode(element, false) as HTMLElement
     // const yourDOCTYPE = "<!DOCTYPE html..."; // your doctype declaration
     // const printPreview = window.open('about:blank', 'print_preview');
     // const printDocument = printPreview.document;
