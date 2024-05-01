@@ -1,8 +1,8 @@
 
-[Downloads](https://github.com/sedmedgh/hcanvaser/releases)
+[Downloads](https://github.com/sedmedgh/take-shot/releases)
 
-[![NPM Downloads](https://img.shields.io/npm/dm/hcanvaser.svg)](https://www.npmjs.org/package/hcanvaser)
-[![NPM Version](https://img.shields.io/npm/v/hcanvaser.svg)](https://www.npmjs.org/package/hcanvaser)
+[![NPM Downloads](https://img.shields.io/npm/dm/take-shot.svg)](https://www.npmjs.org/package/take-shot)
+[![NPM Version](https://img.shields.io/npm/v/take-shot.svg)](https://www.npmjs.org/package/take-shot)
 
 #### JavaScript HTML renderer
 
@@ -35,35 +35,36 @@ As each CSS property needs to be manually built to be supported, there are a num
 
 ### Usage
 
-The hcanvaser library utilizes `Promise`s and expects them to be available in the global context. If you wish to
+The take-shot library utilizes `Promise`s and expects them to be available in the global context. If you wish to
 support [older browsers](http://caniuse.com/#search=promise) that do not natively support `Promise`s, please include a polyfill such as
-[es6-promise](https://github.com/jakearchibald/es6-promise) before including `hcanvaser`.
+[es6-promise](https://github.com/jakearchibald/es6-promise) before including `take-shot`.
 
-To render an `element` with hcanvaser, simply call:
-` hcanvaser(element[, options]);`
+To render an `element` with take-shot, simply call:
+` takeShot(element[, options]);`
 
 The function returns a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) containing the `<canvas>` element. Simply add a promise fulfillment handler to the promise using `then`:
 ```ts
   const screenshotTarget = document.documentElement
   const style = getComputedStyle(screenshotTarget)
   const fontFaceName = style.getPropertyValue('--base-font-family')
-  const canvas = await hcanvaser(screenshotTarget,{
+  const screenShot = await takeShot(screenshotTarget,{
     filterFontFace(font){
       if (font?.style['font-family'] === fontFaceName)
         return true
       return false
     },
+    type: 'webp',
+    quality: 0.95 
   })
-  const screenShot = canvas.toImage('webp', 0.95)
 ```
 
 ### Building
 
-You can download ready builds [here](https://github.com/sedmedgh/hcanvaser/releases).
+You can download ready builds [here](https://github.com/sedmedgh/take-shot/releases).
 
 Clone git repository:
 ```shell
-$ git clone https://github.com/sedmedgh/hcanvaser.git
+$ git clone https://github.com/sedmedgh/take-shot.git
 Install dependencies:
 
 $ npm i

@@ -53,10 +53,12 @@
 
       </div>
     </div>
-    <script type="text/javascript" src="../dist/hcanvaser.js"></script>
+    <script type="text/javascript" src="../dist/take-shot.js"></script>
     <script type="text/javascript">
-        hcanvaser(document.body).then(function(canvas) {
-            document.body.appendChild(canvas);
+        takeShot(document.body).then(function(src) {
+            const DOM_img = document.createElement("img");
+            DOM_img.src = src;
+            document.body.appendChild(DOM_img);
         });
     </script>
   </body>

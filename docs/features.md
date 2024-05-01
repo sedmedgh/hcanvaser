@@ -1,6 +1,6 @@
 ---
 title: "Features"
-description: "Discover the different features supported by hcanvaser"
+description: "Discover the different features supported by take-shot"
 ---
 
 Below is a list of all the supported CSS properties and values.

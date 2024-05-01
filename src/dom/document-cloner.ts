@@ -45,7 +45,7 @@ export type CloneConfigurations = CloneOptions & {
   cssRuleSelector?: CSSRuleSelector
 }
 
-const IGNORE_ATTRIBUTE = 'hcanvaser-ignore'
+const IGNORE_ATTRIBUTE = 't-sh-ignore'
 const invalidTags = ['SCRIPT', 'META', 'LINK', 'STYLE', 'TITLE', 'PLASMO-CSUI']
 
 const fakeScroll = (clone: Node, y: number, x: number) => {
@@ -371,7 +371,7 @@ export class DocumentCloner {
     this.counters.parse(new CSSParsedCounterDeclaration(this.context, style))
     const declaration = new CSSParsedPseudoDeclaration(this.context, style)
 
-    const anonymousReplacedElement = document.createElement('hcanvaserpseudoelement')
+    const anonymousReplacedElement = document.createElement('t-sh-pseudo-element')
     copyCSSStyles(style, anonymousReplacedElement)
 
     declaration.content.forEach((token) => {
@@ -484,8 +484,8 @@ export const copyCSSStyles = <T extends HTMLElement | SVGElement>(style: CSSStyl
 
 const PSEUDO_BEFORE = ':before'
 const PSEUDO_AFTER = ':after'
-const PSEUDO_HIDE_ELEMENT_CLASS_BEFORE = '___hcanvaser___pseudoelement_before'
-const PSEUDO_HIDE_ELEMENT_CLASS_AFTER = '___hcanvaser___pseudoelement_after'
+const PSEUDO_HIDE_ELEMENT_CLASS_BEFORE = '___take-shot___pseudoelement_before'
+const PSEUDO_HIDE_ELEMENT_CLASS_AFTER = '___take-shot___pseudoelement_after'
 
 const PSEUDO_HIDE_ELEMENT_STYLE = `{
     content: "" !important;

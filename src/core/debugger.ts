@@ -1,4 +1,4 @@
-const elementDebuggerAttribute = 'data-hcanvaser-debug'
+const elementDebuggerAttribute = 'data-take-shot-debug'
 export const enum DebuggerType {
   NONE,
   ALL,

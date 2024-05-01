@@ -1,6 +1,6 @@
 ---
 title: "Options"
-description: "Explore the different configuration options available for hcanvaser"
+description: "Explore the different configuration options available for take-shot"
 previousUrl: "/getting-started"
 previousTitle: "Getting Started"
 nextUrl: "/features"
@@ -30,4 +30,4 @@ These are all of the available configuration options.
 | filterFontFace |                         `(fontFace: CSSStyleRule) => true`                         | ignore embeding fontFaces in canvas foreign-object                                                                                                  
 | cssRuleSelector | `(rule: string) => rule.includes('::-webkit-scrollbar') \|\| rule.includes('scrollbar')` | select cssRules for add them to canvas foreign-object
 
-If you wish to exclude certain `Element`s from getting rendered, you can add a `hcanvaser-ignore` attribute to those elements and hcanvaser will exclude them from the rendering.
+If you wish to exclude certain `Element`s from getting rendered, you can add a `take-shot-ignore` attribute to those elements and take-shot will exclude them from the rendering.

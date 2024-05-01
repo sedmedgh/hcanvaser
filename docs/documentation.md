@@ -1,6 +1,6 @@
 ---
 title: "About"
-description: "Learn about hcanvaser, how it works and some of its limitations"
+description: "Learn about take-shot, how it works and some of its limitations"
 nextUrl: "/getting-started"
 nextTitle: "Getting Started"
 ---

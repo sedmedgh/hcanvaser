@@ -8,14 +8,6 @@ import {ForeignObjectRenderer} from './render/canvas/foreignobject-renderer'
 import {Context, ContextOptions} from './core/context'
 import {CSSRuleSelector, FilterFontFace} from './dom/extra/embed-webfonts'
 
-export type Options = CloneOptions &
-  WindowOptions &
-  RenderOptions &
-  ContextOptions & {
-    backgroundColor: string | null
-    filterFontFace?: FilterFontFace
-    cssRuleSelector?: CSSRuleSelector
-  }
 type ImageTypes = 'image/png' | 'image/jpeg' | 'image/webp'
 const imageMap: Record<string, ImageTypes> = {
   png: 'image/png',
@@ -23,21 +15,29 @@ const imageMap: Record<string, ImageTypes> = {
   webp: 'image/webp',
 }
 type ImageType = keyof typeof imageMap
-type ToImage = (type?: ImageType, quality?: number) => string
-type ReturnType = HTMLCanvasElement & {toImage: ToImage}
+export type Options = CloneOptions &
+    WindowOptions &
+    RenderOptions &
+    ContextOptions & {
+  backgroundColor: string | null
+  filterFontFace?: FilterFontFace
+  cssRuleSelector?: CSSRuleSelector
+  type?: ImageType
+  quality?: number
+}
 
-const hcanvaser = (element: HTMLElement, options: Partial<Options> = {}): Promise<ReturnType> => {
+const takeShot = (element: HTMLElement, options: Partial<Options> = {}): Promise<string | undefined> => {
   return renderElement(element, options)
 }
 
-export default hcanvaser
+export default takeShot
 
 if (typeof window !== 'undefined') {
   CacheStorage.setContext(window)
 }
 
 
-const renderElement = async (element: HTMLElement, opts: Partial<Options>): Promise<ReturnType> => {
+const renderElement = async (element: HTMLElement, opts: Partial<Options>): Promise<string | undefined> => {
   if (!element || typeof element !== 'object') {
     return Promise.reject('Invalid element provided as first argument')
   }
@@ -121,14 +121,12 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
   const canvas = await renderer.render(clonedElement)
 
   context.logger.debug(`Finished rendering`)
-  Object.assign(canvas, {
-    toImage:(type?: ImageType, quality?: number) => {
-      const _type = type ? imageMap[type] : undefined
-      const _quality = quality && typeof quality === 'number' && quality > 0.9 ? 0.9 : quality
-      if (_type) return canvas.toDataURL(_type, _quality);
-    }
-  })
-  return canvas as ReturnType
+  const toImage = (type?: ImageType, quality?: number) => {
+    const _type = type ? imageMap[type] : undefined
+    const _quality = quality && typeof quality === 'number' && quality > 0.9 ? 0.9 : quality
+    if (_type) return canvas.toDataURL(_type, _quality);
+  }
+  return toImage(opts.type, opts.quality)
 }
 
 const parseBackgroundColor = (context: Context, element: HTMLElement, backgroundColorOverride?: string | null) => {

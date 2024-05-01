@@ -23,8 +23,8 @@
 </div>
 <h1>Existing canvas:</h1>
 <canvas width="500" height="200"></canvas>
-<script type="text/javascript" src="../dist/hcanvaser.js"></script>
-<button>Run hcanvaser</button>
+<script type="text/javascript" src="../dist/take-shot.js"></script>
+<button>Run takeShot</button>
 <script type="text/javascript">
     var canvas = document.querySelector("canvas");
     var ctx = canvas.getContext("2d");
@@ -40,7 +40,7 @@
     ctx.stroke();
 
     document.querySelector("button").addEventListener("click", function() {
-        hcanvaser(document.querySelector("#content"), {canvas: canvas, scale: 1}).then(function(canvas) {
+        takeShot(document.querySelector("#content"), {canvas: canvas, scale: 1}).then(function(src) {
             console.log('Drew on the existing canvas');
         });
     }, false);

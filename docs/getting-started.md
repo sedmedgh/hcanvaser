@@ -1,6 +1,6 @@
 ---
 title: "Getting Started"
-description: "Learn how to start using hcanvaser"
+description: "Learn how to start using take-shot"
 previousUrl: "/documentation"
 previousTitle: "About"
 nextUrl: "/configuration"
@@ -9,22 +9,24 @@ nextTitle: "Configuration"
 
 ## Installing
 
-You can install `hcanvaser` through npm or [download a built release](https://github.com/sedmedgh/hcanvaser/releases).
+You can install `take-shot` through npm or [download a built release](https://github.com/sedmedgh/take-shot/releases).
 
 ### npm
 
-    npm install hcanvaser
+    npm install take-shot
 
 ```javascript
-import hcanvaser from 'hcanvaser';
+import takeShot from 'take-shot';
 ```
 
 ## Usage
 
-To render an `element` with hcanvaser with some (optional) [options](/configuration/), simply call `hcanvaser(element, options);`
+To render an `element` with take-shot with some (optional) [options](/configuration/), simply call `takeShot(element, options);`
 
 ```javascript
-hcanvaser(document.body).then(function(canvas) {
-    document.body.appendChild(canvas);
+takeShot(document.body).then(function(src) {
+    const DOM_img = document.createElement("img");
+    DOM_img.src = src;
+    document.body.appendChild(DOM_img);
 });
 ```

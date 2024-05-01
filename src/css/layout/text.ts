@@ -64,7 +64,7 @@ export const parseTextBounds = (
 const getWrapperBounds = (context: Context, node: Text): Bounds => {
   const ownerDocument = node.ownerDocument
   if (ownerDocument) {
-    const wrapper = ownerDocument.createElement('hcanvaserwrapper')
+    const wrapper = ownerDocument.createElement('take-shot-wrapper')
     wrapper.appendChild(node.cloneNode(true))
     const parentNode = node.parentNode
     if (parentNode) {
