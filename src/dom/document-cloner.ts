@@ -26,6 +26,7 @@ import {DebuggerType, isDebugging} from '../core/debugger'
 import {CSSRuleSelector, embedWebFonts, FilterFontFace, injectCssRules} from './extra/embed-webfonts'
 import {embedImages} from './extra/embed-images'
 import {toArray} from './extra/util'
+import {loadingId} from '../utils/loading';
 
 export interface CloneOptions {
   ignoreElements?: (element: Element) => boolean
@@ -46,10 +47,11 @@ export type CloneConfigurations = CloneOptions & {
 }
 
 const IGNORE_ATTRIBUTE = 't-sh-ignore'
-const invalidTags = ['SCRIPT', 'META', 'LINK', 'STYLE', 'TITLE', 'PLASMO-CSUI']
+const invalidTags = ['SCRIPT', 'META', 'LINK', 'TITLE', 'PLASMO-CSUI']
 
 const fakeScroll = (clone: Node, y: number, x: number) => {
   if (y !== 0 || x !== 0) {
+    console.log('clone, x, y ===>', clone, x, y);
     // @ts-ignore
     const children = toArray<ChildNode>(clone.childNodes)
     const body = children.find((ch) => ch.nodeName == 'BODY')
@@ -64,6 +66,7 @@ const fakeScroll = (clone: Node, y: number, x: number) => {
       // @ts-ignore
       clone.style.overflow = 'hidden'
       if (scrolledNodes.length > 0) {
+        // const direction = window.getComputedStyle(clone).direction
         // @ts-ignore
         let right = clone.style.direction === 'rtl' ? `${x}px` : 0
         // @ts-ignore
@@ -76,6 +79,7 @@ const fakeScroll = (clone: Node, y: number, x: number) => {
           scrolledNodes[0].style.inset = inset
         } else {
           const section = document.createElement('section')
+          console.log('section ===>', section);
           // @ts-ignore
           copyCSSStyles(clone.style, section)
           section.style.inset = inset
@@ -111,13 +115,9 @@ export class DocumentCloner {
     }
 
     this.documentElement = this.cloneNode(element, false) as HTMLElement
-    // const yourDOCTYPE = "<!DOCTYPE html..."; // your doctype declaration
-    // const printPreview = window.open('about:blank', 'print_preview');
-    // const printDocument = printPreview.document;
-    // printDocument.open();
-    // printDocument.write(yourDOCTYPE+ this.documentElement.innerHTML);
-    // printDocument.close()
-    injectCssRules(this.documentElement, options.cssRuleSelector)
+    copyCSSStyles(window.getComputedStyle(element), this.documentElement)
+    injectCssRules(this.documentElement, /*options.cssRuleSelector*/element)
+    console.log('this.documentElement ===>', this.documentElement);
   }
   async embed(filterFontFace?: FilterFontFace) {
     await embedWebFonts(this.documentElement, filterFontFace)
@@ -158,7 +158,7 @@ export class DocumentCloner {
   }
 
   createCustomElementClone(node: HTMLElement): HTMLElement {
-    const clone = document.createElement('hcanvasercustomelement')
+    const clone = document.createElement('take-shot-custom-element')
     copyCSSStyles(node.style, clone)
 
     return clone
@@ -266,7 +266,7 @@ export class DocumentCloner {
     if (!this.isVisible(child.style)) return
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    if (invalidTags.includes(child.tagName) || child.nodeType == 8) return
+    if (invalidTags.includes(child.tagName) || child.nodeType == 8 || child.id == loadingId) return
     if (
       !isElementNode(child) ||
       (!isScriptElement(child) &&
@@ -337,10 +337,10 @@ export class DocumentCloner {
 
       this.counters.pop(counters)
 
-      if ((style && !isIFrameElement(node)) || copyStyles) {
+      /*if ((style && isSVGElementNode(node) && !isIFrameElement(node)) || copyStyles) {
+        console.log('(style && !isIFrameElement(node)) || copyStyles) ===>', style, !isIFrameElement(node), copyStyles);
         copyCSSStyles(style, clone)
-      }
-
+      }*/
       fakeScroll(clone, node.scrollTop, node.scrollLeft)
 
       if ((isTextareaElement(node) || isSelectElement(node)) && (isTextareaElement(clone) || isSelectElement(clone))) {

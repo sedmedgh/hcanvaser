@@ -20,7 +20,7 @@ export class ForeignObjectRenderer extends Renderer {
     this.canvas.style.height = `${options.height}px`
 
     this.ctx.scale(this.options.scale, this.options.scale)
-    this.ctx.translate(-options.x, -options.y)
+    // this.ctx.translate(-options.x, -options.y)
     this.context.logger.debug(
       `EXPERIMENTAL ForeignObject renderer initialized (${options.width}x${options.height} at ${options.x},${options.y}) with scale ${options.scale}`
     )
@@ -42,7 +42,7 @@ export class ForeignObjectRenderer extends Renderer {
       this.ctx.fillRect(0, 0, this.options.width * this.options.scale, this.options.height * this.options.scale)
     }
 
-    this.ctx.drawImage(img, -this.options.x * this.options.scale, -this.options.y * this.options.scale)
+    this.ctx.drawImage(img, 0, 0)
 
     return this.canvas
   }

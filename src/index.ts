@@ -1,12 +1,13 @@
 import {Bounds, parseBounds, parseDocumentSize} from './css/layout/bounds'
 import {COLORS, isTransparent, parseColor} from './css/types/color'
-import {CloneConfigurations, CloneOptions, DocumentCloner, WindowOptions} from './dom/document-cloner'
+import {CloneConfigurations, CloneOptions, DocumentCloner, WindowOptions} from './dom/document-cloner';
 import {isBodyElement, isHTMLElement} from './dom/node-parser'
 import {CacheStorage} from './core/cache-storage'
 import {RenderConfigurations, RenderOptions} from './render/canvas/canvas-renderer'
 import {ForeignObjectRenderer} from './render/canvas/foreignobject-renderer'
 import {Context, ContextOptions} from './core/context'
 import {CSSRuleSelector, FilterFontFace} from './dom/extra/embed-webfonts'
+import {LoadingProps, useLoading} from './utils/loading';
 
 type ImageTypes = 'image/png' | 'image/jpeg' | 'image/webp'
 const imageMap: Record<string, ImageTypes> = {
@@ -24,6 +25,7 @@ export type Options = CloneOptions &
     cssRuleSelector?: CSSRuleSelector
     type?: ImageType
     quality?: number
+    loading?: LoadingProps
   }
 
 const takeShot = (element: HTMLElement, options: Partial<Options> = {}): Promise<string | undefined> => {
@@ -40,6 +42,8 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
   if (!element || typeof element !== 'object') {
     return Promise.reject('Invalid element provided as first argument')
   }
+  const {removeLoading, insertLoading} = useLoading(element, opts.loading)
+  insertLoading()
   const ownerDocument = element.ownerDocument
 
   if (!ownerDocument) {
@@ -101,7 +105,7 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
   const {width, height, left, top} =
     isBodyElement(clonedElement) || isHTMLElement(clonedElement)
       ? parseDocumentSize(clonedElement.ownerDocument)
-      : parseBounds(context, clonedElement)
+      : parseBounds(context, element)
 
   const backgroundColor = parseBackgroundColor(context, clonedElement, opts.backgroundColor)
 
@@ -124,7 +128,10 @@ const renderElement = async (element: HTMLElement, opts: Partial<Options>): Prom
     const _quality = quality && typeof quality === 'number' && quality > 0.9 ? 0.9 : quality
     if (_type) return canvas.toDataURL(_type, _quality)
   }
-  return toImage(opts.type, opts.quality)
+  const dataUrl = toImage(opts.type, opts.quality)
+  removeLoading()
+  console.log('dataUrl ===>', dataUrl);
+  return dataUrl
 }
 
 const parseBackgroundColor = (context: Context, element: HTMLElement, backgroundColorOverride?: string | null) => {

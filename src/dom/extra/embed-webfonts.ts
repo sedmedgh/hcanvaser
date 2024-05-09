@@ -234,23 +234,59 @@ export async function embedWebFonts<T extends HTMLElement>(clonedNode: T, filter
   }
 }
 export type CSSRuleSelector = (cssText: string) => boolean
-export const injectCssRules = <T extends HTMLElement>(clonedNode: T, cssRuleSelector?: CSSRuleSelector) => {
-  const cssText = getStyleRuleList(clonedNode)
-    ?.filter((rule: string) => {
-      if (typeof cssRuleSelector === 'function') return cssRuleSelector(rule)
-      return rule.includes('::-webkit-scrollbar') || rule.includes('scrollbar')
-    })
-    ?.join('\n')
-  if (cssText) {
-    const styleNode = document.createElement('style')
-    const sytleContent = document.createTextNode(cssText)
+export const injectCssRules = <T extends HTMLElement>(clonedNode: T, element: T) => {
+  const styles = element.ownerDocument.getElementsByTagName('style')
+  // console.log('element.ownerDocument.adoptedStyleSheets ===>', element.ownerDocument.adoptedStyleSheets);
+  const sheets = getStyleSheets(element)?.map((styleSheet: CSSStyleSheet) => toArray(styleSheet.cssRules).map(({cssText}: CSSRule) => cssText).join(' ').replaceAll('\n', ' '))
+  console.log('sheets.map(sheet =>sheet.cssRules) ===>', sheets);
+  for (let x in styles) {
+    if (styles[x].cloneNode) {
+      const styleNode = styles[x].cloneNode(true)
+      console.log('styleNode ===>', styleNode);
+      // const styleNode = document.createElement('style')
+      // const sytleContent = document.createTextNode(styles[x].innerHTML)
+      //
+      // styleNode.appendChild(sytleContent)
 
-    styleNode.appendChild(sytleContent)
-
-    if (clonedNode.firstChild) {
-      clonedNode.insertBefore(styleNode, clonedNode.firstChild)
-    } else {
-      clonedNode.appendChild(styleNode)
+      if (clonedNode.firstChild) {
+        clonedNode.insertBefore(styleNode, clonedNode.firstChild)
+      } else {
+        clonedNode.appendChild(styleNode)
+      }
     }
+    else console.log('styles[x] ===>', styles[x]);
   }
+  //   if (cssText) {
+  //     const styleNode = document.createElement('style')
+  //     const sytleContent = document.createTextNode(cssText)
+  //
+  //     styleNode.appendChild(sytleContent)
+  //
+  //     if (clonedNode.firstChild) {
+  //       clonedNode.insertBefore(styleNode, clonedNode.firstChild)
+  //     } else {
+  //       clonedNode.appendChild(styleNode)
+  //     }
+  //   }
+  // })
+  // const cssRules: string[] | undefined = getStyleRuleList(clonedNode)
+  // console.log('cssRules ===>', cssRules);
+  // const cssText = cssRules
+  //   ?.filter((rule: string) => {
+  //     if (typeof cssRuleSelector === 'function') return cssRuleSelector(rule)
+  //     return true
+  //   })
+  //   ?.join('\n')
+  // if (cssText) {
+  //   const styleNode = document.createElement('style')
+  //   const sytleContent = document.createTextNode(cssText)
+  //
+  //   styleNode.appendChild(sytleContent)
+  //
+  //   if (clonedNode.firstChild) {
+  //     clonedNode.insertBefore(styleNode, clonedNode.firstChild)
+  //   } else {
+  //     clonedNode.appendChild(styleNode)
+  //   }
+  // }
 }

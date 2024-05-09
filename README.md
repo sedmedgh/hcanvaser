@@ -42,12 +42,12 @@ support [older browsers](http://caniuse.com/#search=promise) that do not nativel
 To render an `element` with take-shot, simply call:
 ` takeShot(element[, options]);`
 
-The function returns a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) containing the `<canvas>` element. Simply add a promise fulfillment handler to the promise using `then`:
+The function returns a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) containing the `string` source. Simply add a promise fulfillment handler to the promise using `then`:
 ```ts
   const screenshotTarget = document.documentElement
   const style = getComputedStyle(screenshotTarget)
   const fontFaceName = style.getPropertyValue('--base-font-family')
-  const screenShot = await takeShot(screenshotTarget,{
+  takeShot(screenshotTarget,{
     filterFontFace(font){
       if (font?.style['font-family'] === fontFaceName)
         return true
@@ -55,7 +55,11 @@ The function returns a [Promise](https://developer.mozilla.org/en-US/docs/Web/Ja
     },
     type: 'webp',
     quality: 0.95 
-  })
+  }).then((src) => {
+      const DOM_img = document.createElement("img");
+      DOM_img.src = src;
+      document.body.appendChild(DOM_img);
+  });
 ```
 
 ### Building
@@ -76,4 +80,4 @@ $ npm run build
 
 ### TODO List
 - [ ] Select element like inspect element and then take shot
-- [ ] Placing the loading for the Element that we are taking a picture of that
+- [x] Placing the loading for the Element that we are taking a picture of that

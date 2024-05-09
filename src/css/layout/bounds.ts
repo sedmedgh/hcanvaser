@@ -37,7 +37,7 @@ export class Bounds {
 }
 export const parseBounds = (context: Context, node: Element): Bounds => {
   // @ts-ignore
-  const style = node.style
+  const style = window.getComputedStyle(node)
   const rect = JSON.parse(JSON.stringify(node.getBoundingClientRect()))
   const width = parseInt(style?.width, 10)
   const height = parseInt(style?.height, 10)
